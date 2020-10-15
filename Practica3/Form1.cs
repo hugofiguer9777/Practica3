@@ -80,6 +80,11 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["TransferNode1"].ObjectName = nombre;
         }
 
+        public void crearPath(string nodo1, string nodo2)
+        {
+            intelligentObjects.CreateLink("Path", ((INodeObject)modelo.Facility.IntelligentObjects[nodo1]), ((INodeObject)modelo.Facility.IntelligentObjects[nodo2]), null);
+        }
+
         public void crearObjeto(string tipo, double x, double y)
         {
             intelligentObjects.CreateObject(tipo, new FacilityLocation(x, 0, y));
