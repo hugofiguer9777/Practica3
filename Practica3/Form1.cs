@@ -40,14 +40,23 @@ namespace Practica3
 
         public void crearModelo()
         {
-            //intelligentObjects.CreateObject("Source", new FacilityLocation(0, 0, 10));
-            //intelligentObjects.CreateObject("Source", new FacilityLocation(0, 0, 15));
-            crearSource("Ejemplo1", 0, 10);
-            crearSource("Ejemplo2", 0, 15);
+            crearRegiones();
 
             //modelo.Facility.IntelligentObjects["Source1"].Properties["InterarrivalTime"].Value = "Random.Exponential(5)";
 
             SimioProjectFactory.SaveProject(proyectoApi, rutafinal, out warnings);
+        }
+
+        public void crearRegiones()
+        {
+            crearTransferNode("Metropolitana", 0, 0);
+            crearTransferNode("Norte", 5, -20);
+            crearTransferNode("NorOriente", 30, -10);
+            crearTransferNode("SurOriente", 15, 20);
+            crearTransferNode("Central", -15, 20);
+            crearTransferNode("SurOccidente", -40, 10);
+            crearTransferNode("NorOccidente", -40, -20);
+            crearTransferNode("Peten", 10, -50);
         }
 
         public void crearSource(string nombre, double x, double y)
