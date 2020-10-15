@@ -50,13 +50,13 @@ namespace Practica3
         public void crearRegiones()
         {
             crearTransferNode("Metropolitana", 0, 0);
-            crearTransferNode("Norte", 5, -20);
-            crearTransferNode("NorOriente", 30, -10);
-            crearTransferNode("SurOriente", 15, 20);
-            crearTransferNode("Central", -15, 20);
-            crearTransferNode("SurOccidente", -40, 10);
-            crearTransferNode("NorOccidente", -40, -20);
-            crearTransferNode("Peten", 10, -50);
+            crearTransferNode("Norte", 5000, -20000);
+            crearTransferNode("NorOriente", 30000, -10000);
+            crearTransferNode("SurOriente", 15000, 20000);
+            crearTransferNode("Central", -15000, 20000);
+            crearTransferNode("SurOccidente", -40000, 10000);
+            crearTransferNode("NorOccidente", -40000, -20000);
+            crearTransferNode("Peten", 10000, -50000);
         }
 
         public void crearSource(string nombre, double x, double y)
