@@ -1,0 +1,11 @@
+C:\Users\hugo_\source\repos\Practica3\Practica3\bin\Debug\Practica3.exe.config
+C:\Users\hugo_\source\repos\Practica3\Practica3\bin\Debug\Practica3.exe
+C:\Users\hugo_\source\repos\Practica3\Practica3\bin\Debug\Practica3.pdb
+C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.csprojAssemblyReference.cache
+C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.Form1.resources
+C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.Properties.Resources.resources
+C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.csproj.GenerateResource.cache
+C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.csproj.CoreCompileInputs.cache
+C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.csproj.CopyComplete
+C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.exe
+C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.pdb
