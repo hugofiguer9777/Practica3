@@ -21,6 +21,7 @@ namespace Practica3
         private string rutabase = "ModeloBase.spfx";
         private string rutafinal = "ModeloFinal.spfx";
         private string[] warnings;
+        int contNodos = 1;
         private IModel modelo;
         private IIntelligentObjects intelligentObjects;
         private int contPaths = 0;
@@ -43,6 +44,7 @@ namespace Practica3
             crearRegiones();
             crearEstaciones();
             crearRutas();
+            dibujarContorno();
             //modelo.Facility.IntelligentObjects["Source1"].Properties["InterarrivalTime"].Value = "Random.Exponential(5)";
 
             SimioProjectFactory.SaveProject(proyectoApi, rutafinal, out warnings);
@@ -67,7 +69,6 @@ namespace Practica3
             crearTransferNode("Peten", 10000, -50000);
             modelo.Facility.IntelligentObjects["Peten"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
         }
-
         public void crearSource(string nombre, double x, double y)
         {
             crearObjeto("Source", x, y);
@@ -96,6 +97,7 @@ namespace Practica3
         {
             crearObjeto("TransferNode", x, y);
             modelo.Facility.IntelligentObjects["TransferNode1"].ObjectName = nombre;
+            contNodos++;
         }
 
         public void crearPath(string nodo1, string nodo2)
@@ -119,7 +121,6 @@ namespace Practica3
         {
             intelligentObjects.CreateObject(tipo, new FacilityLocation(x, 0, y));
         }
-
         
         ///MI PARTE  201503750
         public void crearEstaciones()
@@ -253,7 +254,7 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.20";
-            crearPath("NorOriente", "TNS_NorOri");
+            crearPath("NorOriente", "TNE_NorOri");
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             crearPath("TNS_NorOri", "Metropolitana");
@@ -278,7 +279,7 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.40";
-            crearPath("SurOriente", "TNS_SurOri");
+            crearPath("SurOriente", "TNE_SurOri");
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             crearPath("TNS_SurOri", "NorOriente");
@@ -299,7 +300,7 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.35";
-            crearPath("Central", "TNS_Central");
+            crearPath("Central", "TNE_Central");
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             crearPath("TNS_Central", "Metropolitana");
@@ -324,7 +325,7 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.35";
-            crearPath("SurOccidente", "TNS_SurOcci");
+            crearPath("SurOccidente", "TNE_SurOcci");
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             crearPath("TNS_SurOcci", "NorOccidente");
@@ -341,7 +342,7 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.40";
-            crearPath("NorOccidente", "TNS_NorOcci");
+            crearPath("NorOccidente", "TNE_NorOcci");
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             crearPath("TNS_NorOcci", "SurOccidente");
@@ -362,7 +363,7 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.5";
-            crearPath("Peten", "TNS_Peten");
+            crearPath("Peten", "TNE_Peten");
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["LogicalLength"].Value = "0";
             crearPath("TNS_Peten", "Norte");
@@ -376,5 +377,107 @@ namespace Practica3
 
         }
 
+        public void dibujarContorno()
+        {
+            // --------- FRONTERA BELICE ---------
+            crearTransferNode("N" + contNodos, 42000, -30000);
+            crearTransferNode("N" + contNodos, 30000, -30000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 34000);
+
+            crearTransferNode("N" + contNodos, 30000, -80000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 232000);
+
+            // --------- FRONTERA MEXICO ---------
+            crearTransferNode("N" + contNodos, -20000, -80000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 210000);
+
+            crearTransferNode("N" + contNodos, -20000, -60000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 83000);
+
+            crearTransferNode("N" + contNodos, -41000, -60000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 57000);
+
+            crearTransferNode("N" + contNodos, -27000, -49000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 79000);
+
+            crearTransferNode("N" + contNodos, -11000, -40000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 86000);
+
+            crearTransferNode("N" + contNodos, -11250, -30000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 46000);
+
+            crearTransferNode("N" + contNodos, -52000, -30000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 151000);
+
+            crearTransferNode("N" + contNodos, -63750, -7500);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 125000);
+
+            crearTransferNode("N" + contNodos, -59000, 2000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 40000);
+
+            crearTransferNode("N" + contNodos, -66000, 18000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 85000);
+
+            // --------- FRONTERA PACIFICO ---------
+            crearTransferNode("N" + contNodos, -54000, 36000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 60000);
+
+            crearTransferNode("N" + contNodos, -30000, 43000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 75000);
+
+            crearTransferNode("N" + contNodos, -3000, 40000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 63000);
+
+            crearTransferNode("N" + contNodos, 22500, 42500);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 56000);
+
+            // --------- FRONTERA EL SALVADOR ---------
+            crearTransferNode("N" + contNodos, 40000, 16250);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 203000);
+
+            // --------- FRONTERA HONDURAS ---------
+            crearTransferNode("N" + contNodos, 50000, 4000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 63000);
+
+            crearTransferNode("N" + contNodos, 47000, -12000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 55000);
+
+            crearTransferNode("N" + contNodos, 60000, -29000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 138000);
+
+            // --------- FRONTERA CARIBE ---------
+            crearTransferNode("N" + contNodos, 48500, -26000);
+            crearPath("N" + (contNodos - 2), "N" + (contNodos - 1));
+            distanciaPath("Path" + contPaths, 96000);
+
+            crearPath("N" + (contNodos - 1), "N" + (contNodos - 22));
+            distanciaPath("Path" + contPaths, 52000);
+        }
+
+        public void distanciaPath(string nombre, int distancia)
+        {
+            modelo.Facility.IntelligentObjects[nombre].Properties["DrawnToScale"].Value = "False";
+            modelo.Facility.IntelligentObjects[nombre].Properties["LogicalLength"].Value = distancia.ToString();
+        }
     }
 }
