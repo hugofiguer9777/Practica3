@@ -131,6 +131,12 @@ namespace Practica3
             contPaths++;
         }
 
+        public void crearPathSourceNodo(string nodo1, string nodo2)
+        {
+            intelligentObjects.CreateLink("Path", ((IFixedObject)modelo.Facility.IntelligentObjects[nodo1]).Nodes[0], ((INodeObject)modelo.Facility.IntelligentObjects[nodo2]), null);
+            contPaths++;
+        }
+
         public void crearObjeto(string tipo, double x, double y)
         {
             intelligentObjects.CreateObject(tipo, new FacilityLocation(x, 0, y));
@@ -434,6 +440,11 @@ namespace Practica3
             crearTransferNode("N" + contNodos, 30000, -80000);
             crearConveyor("N" + (contNodos - 2), "N" + (contNodos - 1));
             distanciaConveyor("Conveyor" + contConveyor, 232000);
+
+            crearEntityAvion("AvionArmada", 29995, -80007);
+            crearSource("Armada", 29998.75, -80010);
+            modelo.Facility.IntelligentObjects["Armada"].Properties["EntityType"].Value = "AvionArmada";
+            crearPathSourceNodo("Armada", "N" + (contNodos - 1));
 
             // --------- FRONTERA MEXICO ---------
             crearTransferNode("N" + contNodos, -20000, -80000);
