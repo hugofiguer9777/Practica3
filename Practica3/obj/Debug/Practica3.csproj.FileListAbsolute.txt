@@ -9,3 +9,14 @@ C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.csproj.CoreC
 C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.csproj.CopyComplete
 C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.exe
 C:\Users\hugo_\source\repos\Practica3\Practica3\obj\Debug\Practica3.pdb
+D:\C#\Practica3\Practica3\bin\Debug\Practica3.exe.config
+D:\C#\Practica3\Practica3\bin\Debug\Practica3.exe
+D:\C#\Practica3\Practica3\bin\Debug\Practica3.pdb
+D:\C#\Practica3\Practica3\obj\Debug\Practica3.Form1.resources
+D:\C#\Practica3\Practica3\obj\Debug\Practica3.Properties.Resources.resources
+D:\C#\Practica3\Practica3\obj\Debug\Practica3.csproj.GenerateResource.cache
+D:\C#\Practica3\Practica3\obj\Debug\Practica3.csproj.CoreCompileInputs.cache
+D:\C#\Practica3\Practica3\obj\Debug\Practica3.csproj.CopyComplete
+D:\C#\Practica3\Practica3\obj\Debug\Practica3.exe
+D:\C#\Practica3\Practica3\obj\Debug\Practica3.pdb
+D:\C#\Practica3\Practica3\obj\Debug\Practica3.csprojAssemblyReference.cache
