@@ -94,6 +94,12 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["ModelEntity1"].ObjectName = nombre;
         }
 
+        public void crearEntityAvion(string nombre, double x, double y)
+        {
+            crearObjeto("Avion", x, y);
+            modelo.Facility.IntelligentObjects["Avion1"].ObjectName = nombre;
+        }
+
         public void crearTransferNode(string nombre, double x, double y)
         {
             crearObjeto("TransferNode", x, y);
