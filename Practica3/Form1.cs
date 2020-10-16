@@ -518,7 +518,7 @@ namespace Practica3
         {
             modelo.Facility.IntelligentObjects[nombre].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects[nombre].Properties["LogicalLength"].Value = distancia.ToString();
-            modelo.Facility.IntelligentObjects[nombre].Properties["InitialDesiredSpeed"].Value = "60";
+            modelo.Facility.IntelligentObjects[nombre].Properties["InitialDesiredSpeed"].Value = "37.2823"; // Mts por seg
         }
     }
 }
