@@ -118,7 +118,11 @@ namespace Practica3
             intelligentObjects.CreateLink("Path", ((INodeObject)modelo.Facility.IntelligentObjects[nodo1]), ((IFixedObject)modelo.Facility.IntelligentObjects[nodo2]).Nodes[0], null);
             contPaths++;
         }
-
+        public void crearpathSource(string nodo1, string nodo2)
+        {
+            intelligentObjects.CreateLink("Path", ((IFixedObject)modelo.Facility.IntelligentObjects[nodo1]).Nodes[0], ((INodeObject)modelo.Facility.IntelligentObjects[nodo2]), null);
+            contPaths++;
+        }
         public void crearObjeto(string tipo, double x, double y)
         {
             intelligentObjects.CreateObject(tipo, new FacilityLocation(x, 0, y));
@@ -514,5 +518,22 @@ namespace Practica3
             modelo.Facility.IntelligentObjects[nombre].Properties["LogicalLength"].Value = distancia.ToString();
             modelo.Facility.IntelligentObjects[nombre].Properties["InitialDesiredSpeed"].Value = "60";
         }
+
+        public void crearAeropuertos()
+        {
+            crearSource("La Aurora",0,50);
+            crearpathSource("La Aurora", "Metropolitana");
+            modelo.Facility.IntelligentObjects["La Aurora"].Properties["InterarrivalTime"].Value = "Random.Exponential(35)";
+            modelo.Facility.IntelligentObjects["La Aurora"].Properties["EntitiesPerArrival"].Value = "70";
+            crearSource("Mundo Maya", 10000, -50050);
+            crearpathSource("Mundo Maya", "Peten");
+            modelo.Facility.IntelligentObjects["La Aurora"].Properties["InterarrivalTime"].Value = "Random.Exponential(50)";
+            modelo.Facility.IntelligentObjects["La Aurora"].Properties["EntitiesPerArrival"].Value = "40";
+            crearSource("Quetzaltenango", -40000, 10050);
+            crearpathSource("Quetzaltenango", "SurOccidente");
+            modelo.Facility.IntelligentObjects["La Aurora"].Properties["InterarrivalTime"].Value = "Random.Exponential(70)";
+            modelo.Facility.IntelligentObjects["La Aurora"].Properties["EntitiesPerArrival"].Value = "30";
+        }
+
     }
 }
