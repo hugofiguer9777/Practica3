@@ -110,6 +110,7 @@ namespace Practica3
         public void crearConveyor(string nodo1, string nodo2)
         {
             intelligentObjects.CreateLink("Conveyor", ((INodeObject)modelo.Facility.IntelligentObjects[nodo1]), ((INodeObject)modelo.Facility.IntelligentObjects[nodo2]), null);
+            contConveyor++;
         }
 
         public void crearNodeServer(string nodo1, string nodo2)
