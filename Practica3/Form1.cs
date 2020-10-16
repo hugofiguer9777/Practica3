@@ -117,7 +117,6 @@ namespace Practica3
         {
             intelligentObjects.CreateLink("Path", ((INodeObject)modelo.Facility.IntelligentObjects[nodo1]), ((IFixedObject)modelo.Facility.IntelligentObjects[nodo2]).Nodes[0], null);
             contPaths++;
-            contConveyor++;
         }
 
         public void crearObjeto(string tipo, double x, double y)
