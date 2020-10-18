@@ -18,8 +18,8 @@ namespace Practica3
     public partial class Form1 : Form
     {
         private ISimioProject proyectoApi;
-        private string rutabase = "ModeloBase.spfx";
-        private string rutafinal = "ModeloFinal.spfx";
+        private string rutabase = "[MYS1]ModeloBase_P20.spfx";
+        private string rutafinal = "[MYS1]ModeloFinal_P20.spfx";
         private string[] warnings;
         int contNodos = 1;
         int contConveyor = 0;
