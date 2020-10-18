@@ -18,8 +18,9 @@ namespace Practica3
     public partial class Form1 : Form
     {
         private ISimioProject proyectoApi;
-        private string rutabase = "ModeloBase.spfx";
-        private string rutafinal = "ModeloFinal.spfx";
+        private string rutabase = "[MYS1]ModeloBase_P20.spfx";
+        private string rutafinal = "[MYS1]ModeloFinal_P20.spfx";
+        private string rutafinal2 = "[MYS1]ModeloDatos_P20.spfx";
         private string[] warnings;
         int contNodos = 1;
         int contConveyor = 0;
@@ -46,7 +47,9 @@ namespace Practica3
             crearEstaciones();
             crearRutas();
             dibujarContorno();
+            crearAeropuertos();
             //modelo.Facility.IntelligentObjects["Source1"].Properties["InterarrivalTime"].Value = "Random.Exponential(5)";
+            Console.WriteLine(warnings.Length);
 
             SimioProjectFactory.SaveProject(proyectoApi, rutafinal, out warnings);
         }
@@ -69,6 +72,12 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["NorOccidente"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearTransferNode("Peten", 10000, -50000);
             modelo.Facility.IntelligentObjects["Peten"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
+
+            // PUNTOS CARDINALES
+            crearTransferNode("P_NORTE", 0, -100000);
+            crearTransferNode("P_SUR", 0, 70000);
+            crearTransferNode("P_OESTE", -90000, 0);
+            crearTransferNode("P_ESTE", 90000, 0);
         }
         public void crearSource(string nombre, double x, double y)
         {
@@ -92,6 +101,18 @@ namespace Practica3
         {
             crearObjeto("ModelEntity", x, y);
             modelo.Facility.IntelligentObjects["ModelEntity1"].ObjectName = nombre;
+        }
+
+        public void crearEntityAvion(string nombre, double x, double y)
+        {
+            crearObjeto("Avion", x, y);
+            modelo.Facility.IntelligentObjects["Avion1"].ObjectName = nombre;
+        }
+
+        public void crearEntityTurista(string nombre, double x, double y)
+        {
+            crearObjeto("Turista", x, y);
+            modelo.Facility.IntelligentObjects["Turista1"].ObjectName = nombre;
         }
 
         public void crearTransferNode(string nombre, double x, double y)
@@ -118,16 +139,34 @@ namespace Practica3
             intelligentObjects.CreateLink("Path", ((INodeObject)modelo.Facility.IntelligentObjects[nodo1]), ((IFixedObject)modelo.Facility.IntelligentObjects[nodo2]).Nodes[0], null);
             contPaths++;
         }
-        public void crearpathSource(string nodo1, string nodo2)
+
+        public void crearPathSourceNodo(string nodo1, string nodo2)
         {
             intelligentObjects.CreateLink("Path", ((IFixedObject)modelo.Facility.IntelligentObjects[nodo1]).Nodes[0], ((INodeObject)modelo.Facility.IntelligentObjects[nodo2]), null);
             contPaths++;
         }
+
+        public void crearPathOUTSourceNodo(string nodo1, string nodo2)
+        {
+            intelligentObjects.CreateLink("Path", ((IFixedObject)modelo.Facility.IntelligentObjects[nodo1]).Nodes[1], ((INodeObject)modelo.Facility.IntelligentObjects[nodo2]), null);
+            contPaths++;
+        }
+
         public void crearObjeto(string tipo, double x, double y)
         {
             intelligentObjects.CreateObject(tipo, new FacilityLocation(x, 0, y));
         }
-        
+
+        public void modificarTamaño(string objeto, double length, double width, double height)
+        {
+            modelo.Facility.IntelligentObjects[objeto].Size = new FacilitySize(length, width, height);
+        }
+
+        public void cambiarPropiedad(string objeto, string propiedad, string valor)
+        {
+            modelo.Facility.IntelligentObjects[objeto].Properties[propiedad].Value = valor;
+        }
+
         ///MI PARTE  201503750
         public void crearEstaciones()
         {
@@ -137,7 +176,8 @@ namespace Practica3
             crearTransferNode("TNS_Metr", 100, -100);
             modelo.Facility.IntelligentObjects["TNS_Metr"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearNodeServer("TNE_Metr", "Estacion_Metr");
-            crearNodeServer("TNS_Metr", "Estacion_Metr");
+            modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.5";
+            crearPathOUTSourceNodo("Estacion_Metr", "TNS_Metr");
             modelo.Facility.IntelligentObjects["Estacion_Metr"].Properties["InitialCapacity"].Value = "200";
             modelo.Facility.IntelligentObjects["Estacion_Metr"].Properties["ProcessingTime"].Value = "Random.Exponential(4)";
 
@@ -147,7 +187,7 @@ namespace Practica3
             crearTransferNode("TNS_Norte", 5100, -20100);
             modelo.Facility.IntelligentObjects["TNS_Norte"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearNodeServer("TNE_Norte", "Estacion_Norte");
-            crearNodeServer("TNS_Norte", "Estacion_Norte");
+            crearPathOUTSourceNodo("Estacion_Norte", "TNS_Norte");
             modelo.Facility.IntelligentObjects["Estacion_Norte"].Properties["InitialCapacity"].Value = "50";
             modelo.Facility.IntelligentObjects["Estacion_Norte"].Properties["ProcessingTime"].Value = "Random.Exponential(5)";
 
@@ -157,7 +197,7 @@ namespace Practica3
             crearTransferNode("TNS_NorOri", 30100, -10100);
             modelo.Facility.IntelligentObjects["TNS_NorOri"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearNodeServer("TNE_NorOri", "Estacion_NorOri");
-            crearNodeServer("TNS_NorOri", "Estacion_NorOri");
+            crearPathOUTSourceNodo("Estacion_NorOri", "TNS_NorOri");
             modelo.Facility.IntelligentObjects["Estacion_NorOri"].Properties["InitialCapacity"].Value = "40";
             modelo.Facility.IntelligentObjects["Estacion_NorOri"].Properties["ProcessingTime"].Value = "Random.Exponential(3)";
 
@@ -167,7 +207,7 @@ namespace Practica3
             crearTransferNode("TNS_SurOri", 15100, 20100);
             modelo.Facility.IntelligentObjects["TNS_SurOri"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearNodeServer("TNE_SurOri", "Estacion_SurOri");
-            crearNodeServer("TNS_SurOri", "Estacion_SurOri");
+            crearPathOUTSourceNodo("Estacion_SurOri","TNS_SurOri");
             modelo.Facility.IntelligentObjects["Estacion_SurOri"].Properties["InitialCapacity"].Value = "30";
             modelo.Facility.IntelligentObjects["Estacion_SurOri"].Properties["ProcessingTime"].Value = "Random.Exponential(4)";
 
@@ -177,7 +217,7 @@ namespace Practica3
             crearTransferNode("TNS_Central", -14900, 20100);
             modelo.Facility.IntelligentObjects["TNS_Central"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearNodeServer("TNE_Central", "Estacion_Central");
-            crearNodeServer("TNS_Central", "Estacion_Central");
+            crearPathOUTSourceNodo("Estacion_Central","TNS_Central");
             modelo.Facility.IntelligentObjects["Estacion_Central"].Properties["InitialCapacity"].Value = "100";
             modelo.Facility.IntelligentObjects["Estacion_Central"].Properties["ProcessingTime"].Value = "Random.Exponential(5)";
 
@@ -187,7 +227,8 @@ namespace Practica3
             crearTransferNode("TNS_SurOcci", -39900, 10100);
             modelo.Facility.IntelligentObjects["TNS_SurOcci"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearNodeServer("TNE_SurOcci", "Estacion_SurOcci");
-            crearNodeServer("TNS_SurOcci", "Estacion_SurOcci");
+            modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.6";
+            crearPathOUTSourceNodo("Estacion_SurOcci", "TNS_SurOcci");
             modelo.Facility.IntelligentObjects["Estacion_SurOcci"].Properties["InitialCapacity"].Value = "120";
             modelo.Facility.IntelligentObjects["Estacion_SurOcci"].Properties["ProcessingTime"].Value = "Random.Exponential(3)";
 
@@ -197,7 +238,7 @@ namespace Practica3
             crearTransferNode("TNS_NorOcci", -39900, -20100);
             modelo.Facility.IntelligentObjects["TNS_NorOcci"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearNodeServer("TNE_NorOcci", "Estacion_NorOcci");
-            crearNodeServer("TNS_NorOcci", "Estacion_NorOcci");
+            crearPathOUTSourceNodo("Estacion_NorOcci", "TNS_NorOcci");
             modelo.Facility.IntelligentObjects["Estacion_NorOcci"].Properties["InitialCapacity"].Value = "30";
             modelo.Facility.IntelligentObjects["Estacion_NorOcci"].Properties["ProcessingTime"].Value = "Random.Exponential(6)";
 
@@ -207,7 +248,8 @@ namespace Practica3
             crearTransferNode("TNS_Peten", 10100, -50100);
             modelo.Facility.IntelligentObjects["TNS_Peten"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearNodeServer("TNE_Peten", "Estacion_Peten");
-            crearNodeServer("TNS_Peten", "Estacion_Peten");
+            modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.7";
+            crearPathOUTSourceNodo("Estacion_Peten","TNS_Peten");
             modelo.Facility.IntelligentObjects["Estacion_Peten"].Properties["InitialCapacity"].Value = "150";
             modelo.Facility.IntelligentObjects["Estacion_Peten"].Properties["ProcessingTime"].Value = "Random.Exponential(4)";
         }
@@ -224,17 +266,17 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "0";
             crearConveyor("TNS_Metr", "Central");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "63";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "63000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.30";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_Metr", "SurOriente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "124";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "124000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.15";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_Metr", "NorOriente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "241";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "241000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.20";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
 
@@ -249,17 +291,17 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "0";
             crearConveyor("TNS_Norte", "Peten");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "147";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "147000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.40";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_Norte", "NorOriente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "138";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "138000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.10";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_Norte", "NorOccidente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "145";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "145000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.10";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
 
@@ -274,22 +316,22 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "0";
             crearConveyor("TNS_NorOri", "Metropolitana");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "241";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "241000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.30";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_NorOri", "Norte");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "138";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "138000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.15";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_NorOri", "SurOccidente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "231";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "231000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.05";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_NorOri", "Peten");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "282";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "282000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.30";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
 
@@ -304,17 +346,17 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "0";
             crearConveyor("TNS_SurOri", "NorOriente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "231";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "231000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.20";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_SurOri", "Metropolitana");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "124";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "124000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.25";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_SurOri", "Central");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "154";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "154000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.15";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
 
@@ -329,22 +371,22 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "0";
             crearConveyor("TNS_Central", "Metropolitana");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "63";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "63000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.35";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_Central", "SurOriente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "154";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "154000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.05";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_Central", "SurOccidente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "155";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "155000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.15";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_Central", "NorOccidente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "269";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "269000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.10";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
 
@@ -359,12 +401,12 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "0";
             crearConveyor("TNS_SurOcci", "NorOccidente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "87";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "87000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.30";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_SurOcci", "Central");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "155";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "155000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.35";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
 
@@ -379,17 +421,17 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "0";
             crearConveyor("TNS_NorOcci", "SurOccidente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "87";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "87000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.30";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_NorOcci", "Central");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "269";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "269000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.10";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_NorOcci", "Norte");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "145";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "145000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.20";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
 
@@ -404,12 +446,12 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "0";
             crearConveyor("TNS_Peten", "Norte");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "147";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "147000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.25";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
             crearConveyor("TNS_Peten", "NorOriente");
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["DrawnToScale"].Value = "False";
-            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "282";
+            modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["LogicalLength"].Value = "282000";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["SelectionWeight"].Value = "0.25";
             modelo.Facility.IntelligentObjects["Conveyor" + contConveyor].Properties["InitialDesiredSpeed"].Value = "19.44";
 
@@ -426,6 +468,14 @@ namespace Practica3
             crearTransferNode("N" + contNodos, 30000, -80000);
             crearConveyor("N" + (contNodos - 2), "N" + (contNodos - 1));
             distanciaConveyor("Conveyor" + contConveyor, 232000);
+
+            crearEntityAvion("AvionArmada", 29050, -81000);
+            modificarTamaño("AvionArmada", 1000, 1000, 1000);
+            crearSource("Armada", 29998.75, -80010);
+            cambiarPropiedad("Armada", "EntityType", "AvionArmada");
+            cambiarPropiedad("Armada", "MaximumArrivals", "15");
+            cambiarPropiedad("Armada", "InterarrivalTime", "15");
+            crearPathSourceNodo("Armada", "N" + (contNodos - 1));
 
             // --------- FRONTERA MEXICO ---------
             crearTransferNode("N" + contNodos, -20000, -80000);
@@ -516,23 +566,47 @@ namespace Practica3
         {
             modelo.Facility.IntelligentObjects[nombre].Properties["DrawnToScale"].Value = "False";
             modelo.Facility.IntelligentObjects[nombre].Properties["LogicalLength"].Value = distancia.ToString();
-            modelo.Facility.IntelligentObjects[nombre].Properties["InitialDesiredSpeed"].Value = "60";
+            modelo.Facility.IntelligentObjects[nombre].Properties["InitialDesiredSpeed"].Value = "37.2823"; // Mts por seg
         }
 
         public void crearAeropuertos()
         {
-            crearSource("La Aurora",0,50);
-            crearpathSource("La Aurora", "Metropolitana");
-            modelo.Facility.IntelligentObjects["La Aurora"].Properties["InterarrivalTime"].Value = "Random.Exponential(35)";
-            modelo.Facility.IntelligentObjects["La Aurora"].Properties["EntitiesPerArrival"].Value = "70";
-            crearSource("Mundo Maya", 10000, -50050);
-            crearpathSource("Mundo Maya", "Peten");
-            modelo.Facility.IntelligentObjects["La Aurora"].Properties["InterarrivalTime"].Value = "Random.Exponential(50)";
-            modelo.Facility.IntelligentObjects["La Aurora"].Properties["EntitiesPerArrival"].Value = "40";
+            crearEntityTurista("E_Turista", -10, 50);
+            modificarTamaño("E_Turista", 20, 20, 20);
+            crearSource("La_Aurora", 0, 50);
+            cambiarPropiedad("La_Aurora", "EntityType", "E_Turista");
+            cambiarPropiedad("La_Aurora", "EntitiesPerArrival", "70");
+            cambiarPropiedad("La_Aurora", "InterarrivalTime", "Random.Exponential(35)");
+            crearPathSourceNodo("La_Aurora", "Metropolitana");
+            
+
+            crearEntityTurista("E_Turista2", 10010, -50080);
+            modificarTamaño("E_Turista2", 20, 20, 20);
+            crearSource("Mundo_Maya", 10000, -50050);
+            cambiarPropiedad("Mundo_Maya", "EntityType", "E_Turista2");
+            cambiarPropiedad("Mundo_Maya", "EntitiesPerArrival", "40");
+            cambiarPropiedad("Mundo_Maya", "InterarrivalTime", "Random.Exponential(50)");
+            crearPathSourceNodo("Mundo_Maya", "Peten");
+
+            crearEntityTurista("E_Turista3", -40050, 10150);
+            modificarTamaño("E_Turista3", 20, 20, 20);
             crearSource("Quetzaltenango", -40000, 10050);
-            crearpathSource("Quetzaltenango", "SurOccidente");
-            modelo.Facility.IntelligentObjects["La Aurora"].Properties["InterarrivalTime"].Value = "Random.Exponential(70)";
-            modelo.Facility.IntelligentObjects["La Aurora"].Properties["EntitiesPerArrival"].Value = "30";
+            cambiarPropiedad("Quetzaltenango", "EntityType", "E_Turista3");
+            cambiarPropiedad("Quetzaltenango", "EntitiesPerArrival", "30");
+            cambiarPropiedad("Quetzaltenango", "InterarrivalTime", "Random.Exponential(70)");
+            crearPathSourceNodo("Quetzaltenango", "SurOccidente");
+
+            crearSink("Salida_Aurora", 50, 150);
+            crearNodeServer("TNE_Metr", "Salida_Aurora");
+            modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.5";
+
+            crearSink("Salida_Peten", 10050, -50150);
+            crearNodeServer("TNE_Peten", "Salida_Peten");
+            modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.3";
+
+            crearSink("Salida_Quetz", -40050, 10100);
+            crearNodeServer("TNE_SurOcci", "Salida_Quetz");
+            modelo.Facility.IntelligentObjects["Path" + contPaths].Properties["SelectionWeight"].Value = "0.4";
         }
 
     }
