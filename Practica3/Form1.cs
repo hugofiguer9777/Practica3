@@ -69,6 +69,12 @@ namespace Practica3
             modelo.Facility.IntelligentObjects["NorOccidente"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
             crearTransferNode("Peten", 10000, -50000);
             modelo.Facility.IntelligentObjects["Peten"].Properties["OutboundLinkRule"].Value = "ByLinkWeight";
+
+            // PUNTOS CARDINALES
+            crearTransferNode("P_NORTE", 0, -100000);
+            crearTransferNode("P_SUR", 0, 70000);
+            crearTransferNode("P_OESTE", -90000, 0);
+            crearTransferNode("P_ESTE", 90000, 0);
         }
         public void crearSource(string nombre, double x, double y)
         {
