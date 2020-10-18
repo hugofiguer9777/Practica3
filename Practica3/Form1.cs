@@ -141,6 +141,11 @@ namespace Practica3
         {
             intelligentObjects.CreateObject(tipo, new FacilityLocation(x, 0, y));
         }
+
+        public void cambiarPropiedad(string objeto, string propiedad, string valor)
+        {
+            modelo.Facility.IntelligentObjects[objeto].Properties[propiedad].Value = valor;
+        }
         
         ///MI PARTE  201503750
         public void crearEstaciones()
@@ -443,7 +448,9 @@ namespace Practica3
 
             crearEntityAvion("AvionArmada", 29995, -80007);
             crearSource("Armada", 29998.75, -80010);
-            modelo.Facility.IntelligentObjects["Armada"].Properties["EntityType"].Value = "AvionArmada";
+            cambiarPropiedad("Armada", "EntityType", "AvionArmada");
+            cambiarPropiedad("Armada", "MaximumArrivals", "15");
+            cambiarPropiedad("Armada", "InterarrivalTime", "15");
             crearPathSourceNodo("Armada", "N" + (contNodos - 1));
 
             // --------- FRONTERA MEXICO ---------
