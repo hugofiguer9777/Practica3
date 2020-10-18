@@ -148,6 +148,11 @@ namespace Practica3
             intelligentObjects.CreateObject(tipo, new FacilityLocation(x, 0, y));
         }
 
+        public void modificarTamaño(string objeto, double length, double width, double height)
+        {
+            modelo.Facility.IntelligentObjects[objeto].Size = new FacilitySize(length, width, height);
+        }
+
         public void cambiarPropiedad(string objeto, string propiedad, string valor)
         {
             modelo.Facility.IntelligentObjects[objeto].Properties[propiedad].Value = valor;
@@ -452,7 +457,8 @@ namespace Practica3
             crearConveyor("N" + (contNodos - 2), "N" + (contNodos - 1));
             distanciaConveyor("Conveyor" + contConveyor, 232000);
 
-            crearEntityAvion("AvionArmada", 29995, -80007);
+            crearEntityAvion("AvionArmada", 29050, -81000);
+            modificarTamaño("AvionArmada", 1000, 1000, 1000);
             crearSource("Armada", 29998.75, -80010);
             cambiarPropiedad("Armada", "EntityType", "AvionArmada");
             cambiarPropiedad("Armada", "MaximumArrivals", "15");
